@@ -1,0 +1,98 @@
+---
+title: "arima model"
+author: "govind hari"
+date: "2024-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+data=time_series_GDP_ARIMA_youtube
+head(data)
+```
+#checking the class
+```{r}
+class(data)
+```
+#converting the data into a time series data
+```{r}
+gdp_ts=ts(data$GDP,start = min(data$DATE),end = max(data$DATE),frequency = 4)
+```
+#checking the class
+```{r}
+class(gdp_ts)
+```
+```{r}
+#what does the pattern look like (we can see an upward trend)
+plot(gdp_ts)
+```
+```{r}
+#assumptions of arima model
+
+```
+
+```{r}
+#checking the autovorrelation
+acf(gdp_ts)
+```
+```{r}
+#partial autocorrelation
+pacf(gdp_ts)
+```
+```{r}
+#augmented dickey fuller test
+adf.test(gdp_ts)
+#fail to reject null hypothesis
+```
+```{r}
+gdpmodel=auto.arima(gdp_ts,ic="aic",trace=T)
+```
+```{r}
+gdpmodel
+```
+```{r}
+acf(ts(gdpmodel$residuals))
+pacf(ts(gdpmodel$residuals))
+```
+```{r}
+gdpforecast=forecast(gdpmodel,level=c(95),h=10*4)
+gdpforecast
+plot(gdpforecast)
+```
+```{r}
+Box.test(gdpforecast$resid,lag = 5,type="Ljung-Box")
+```
+```{r}
+Box.test(gdpforecast$resid,lag = 10,type="Ljung-Box")
+```
+```{r}
+Box.test(gdpforecast$resid,lag = 108,type="Ljung-Box")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
